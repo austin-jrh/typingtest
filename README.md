@@ -1,1 +1,1 @@
-# sutd-funddevtools2022
+# sutd-devtools2022
