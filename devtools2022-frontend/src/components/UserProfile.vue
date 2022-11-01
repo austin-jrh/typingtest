@@ -1,8 +1,16 @@
 <template>
   <header>
-    <h1>User</h1>
-    <Button text="Sign up" />
-    <Button text="Login" />
+    <div>
+      <h1>User</h1>
+      <div>
+        <label>Login:</label>
+        <input type="text" placeholder="Login" />
+        <label>Password:</label>
+        <input type="text" placeholder="Password" />
+        <Button text="Sign up" />
+        <Button text="Login" />
+      </div>
+    </div>
   </header>
 </template>
 
