@@ -4,11 +4,17 @@
       <el-input placeholder="Add Name" v-model="name"></el-input>
     </el-form-item>
     <el-form-item label="Description">
-      <el-input placeholder="Add Description" v-model="description"></el-input>
+      <el-input
+        type="textarea"
+        autosize
+        placeholder="Add Description"
+        v-model="description"
+      ></el-input>
     </el-form-item>
     <el-form-item label="Words">
       <el-input
         type="textarea"
+        :autosize="{ minRows: 2 }"
         placeholder="Add Custom Words"
         v-model="words"
       ></el-input>

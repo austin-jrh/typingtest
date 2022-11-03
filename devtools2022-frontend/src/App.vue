@@ -2,6 +2,7 @@
   <el-container>
     <el-main>
       <UserProfile />
+      <TypingTest :timeLeft="timeLeft" />
       <AddCustomTest @add-test="addTest" />
       <CustomTests
         @run-test="runTest"
@@ -17,6 +18,7 @@
 import UserProfile from "./components/UserProfile";
 import CustomTests from "./components/CustomTests.vue";
 import AddCustomTest from "./components/AddCustomTest.vue";
+import TypingTest from "./components/TypingTest.vue";
 import { ElMessage, ElMessageBox } from "element-plus";
 
 export default {
@@ -25,13 +27,18 @@ export default {
     UserProfile,
     CustomTests,
     AddCustomTest,
+    TypingTest,
   },
   data() {
     return {
       tests: [],
+      timeLimit: 20,
+      timePassed: 0,
+      timerInterval: null,
     };
   },
   methods: {
+    // Custom Test functionalities
     addTest(test) {
       this.tests = [test, ...this.tests];
       ElMessage({
@@ -40,10 +47,10 @@ export default {
       });
     },
     runTest(id) {
-      console.log("runTest" + id);
+      console.log("runTest " + id);
     },
     editTest(id) {
-      console.log("editTest" + id);
+      console.log("editTest " + id);
     },
     deleteTest(id) {
       ElMessageBox.confirm(
@@ -65,6 +72,14 @@ export default {
         .catch(() => {
           ElMessage({ type: "info", message: "Delete canceled." });
         });
+    },
+
+    // Timer functionalities
+    startTimer() {
+      this.timerInterval = setInterval(() => (this.timePassed += 1), 1000);
+    },
+    onTimesUp() {
+      clearInterval(this.timerInterval);
     },
   },
   created() {
@@ -89,6 +104,22 @@ export default {
         words: "one two three four five",
       },
     ];
+  },
+  mounted() {
+    this.startTimer();
+  },
+  computed: {
+    timeLeft() {
+      return this.timeLimit - this.timePassed;
+    },
+  },
+
+  watch: {
+    timeLeft(newValue) {
+      if (newValue === 0) {
+        this.onTimesUp();
+      }
+    },
   },
 };
 </script>
