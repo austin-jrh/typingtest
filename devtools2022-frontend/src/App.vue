@@ -1,15 +1,23 @@
 <template>
-  <div class="container">
-    <UserProfile />
-    <AddCustomTest @add-test="addTest" />
-    <CustomTests @delete-test="deleteTest" :tests="tests" />
-  </div>
+  <el-container>
+    <el-main>
+      <UserProfile />
+      <AddCustomTest @add-test="addTest" />
+      <CustomTests
+        @run-test="runTest"
+        @edit-test="editTest"
+        @delete-test="deleteTest"
+        :tests="tests"
+      />
+    </el-main>
+  </el-container>
 </template>
 
 <script>
 import UserProfile from "./components/UserProfile";
 import CustomTests from "./components/CustomTests.vue";
 import AddCustomTest from "./components/AddCustomTest.vue";
+import { ElMessage, ElMessageBox } from "element-plus";
 
 export default {
   name: "App",
@@ -25,12 +33,38 @@ export default {
   },
   methods: {
     addTest(test) {
-      this.tests = [...this.tests, test];
+      this.tests = [test, ...this.tests];
+      ElMessage({
+        type: "success",
+        message: "Add successful.",
+      });
+    },
+    runTest(id) {
+      console.log("runTest" + id);
+    },
+    editTest(id) {
+      console.log("editTest" + id);
     },
     deleteTest(id) {
-      if (confirm("Are you sure?")) {
-        this.tests = this.tests.filter((test) => test.id !== id);
-      }
+      ElMessageBox.confirm(
+        "Are you sure you want to delete this test?",
+        "Warning",
+        {
+          confirmButtonText: "OK",
+          cancelButtonText: "Cancel",
+          type: "warning",
+        }
+      )
+        .then(() => {
+          this.tests = this.tests.filter((test) => test.id !== id);
+          ElMessage({
+            type: "success",
+            message: "Delete completed.",
+          });
+        })
+        .catch(() => {
+          ElMessage({ type: "info", message: "Delete canceled." });
+        });
     },
   },
   created() {
@@ -67,5 +101,23 @@ export default {
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+}
+.el-header,
+.el-footer {
+  background-color: #b3c0d1;
+  color: #333;
+  text-align: center;
+  /* line-height: 60px; */
+}
+
+.el-main {
+  background-color: #e9eef3;
+  color: #333;
+  text-align: center;
+  /* line-height: 160px; */
+}
+
+body > .el-container {
+  margin-bottom: 40px;
 }
 </style>

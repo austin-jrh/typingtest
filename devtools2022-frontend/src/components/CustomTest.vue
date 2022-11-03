@@ -1,11 +1,23 @@
 <template>
   <div class="test">
-    <h3>
-      {{ test.name }}
-      <i @click="$emit('delete-test', test.id)" class="fas fa-times"></i>
-    </h3>
-    <p>{{ test.description }}</p>
-    <p>{{ test.words }}</p>
+    <el-card shadow="never" class="box-card">
+      <div slot="header" class="card-header">
+        <h3>{{ test.name }}</h3>
+        <el-row>
+          <el-button type="success" @click="$emit('run-test', test.id)"
+            >Run</el-button
+          >
+          <el-button type="warning" @click="$emit('edit-test', test.id)"
+            >Edit</el-button
+          >
+          <el-button type="danger" @click="$emit('delete-test', test.id)"
+            >Delete</el-button
+          >
+        </el-row>
+      </div>
+      <div>Description: {{ test.description }}</div>
+      <div>Custom Words: {{ test.words }}</div>
+    </el-card>
   </div>
 </template>
 
@@ -19,7 +31,21 @@ export default {
 </script>
 
 <style scoped>
-.fas {
-  color: red;
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.text {
+  font-size: 14px;
+}
+
+.item {
+  margin-bottom: 18px;
+}
+
+.box-card {
+  width: 480px;
 }
 </style>

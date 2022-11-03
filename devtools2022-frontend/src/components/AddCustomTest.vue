@@ -1,29 +1,23 @@
 <template>
-  <form @submit="onSubmit" class="add-form">
-    <div>
-      <label>Name:</label>
-      <input type="text" v-model="name" name="name" placeholder="Add Name" />
-    </div>
-    <div>
-      <label>Description:</label>
-      <input
-        type="text"
-        v-model="description"
-        name="description"
-        placeholder="Add Description"
-      />
-    </div>
-    <div>
-      <label>Words:</label>
-      <input
-        type="text"
-        v-model="words"
-        name="words"
+  <el-form ref="form" label-width="120px">
+    <el-form-item label="Test Name">
+      <el-input placeholder="Add Name" v-model="name"></el-input>
+    </el-form-item>
+    <el-form-item label="Description">
+      <el-input placeholder="Add Description" v-model="description"></el-input>
+    </el-form-item>
+    <el-form-item label="Words">
+      <el-input
+        type="textarea"
         placeholder="Add Custom Words"
-      />
-    </div>
-    <input type="submit" value="Save Custom Test" class="btn btn-block" />
-  </form>
+        v-model="words"
+      ></el-input>
+    </el-form-item>
+    <el-form-item>
+      <el-button @click="onSubmit">Submit</el-button>
+      <el-button @click="onClear">Clear All</el-button>
+    </el-form-item>
+  </el-form>
 </template>
 
 <script>
@@ -60,6 +54,13 @@ export default {
       console.log(newTest);
 
       this.$emit("add-test", newTest);
+
+      this.name = "";
+      this.description = "";
+      this.words = "";
+    },
+    onClear(e) {
+      e.preventDefault();
 
       this.name = "";
       this.description = "";
