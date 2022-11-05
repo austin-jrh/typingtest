@@ -6,7 +6,7 @@
       <AddCustomTest @add-test="addTest" />
       <CustomTests
         @run-test="runTest"
-        @edit-test="editTest"
+        @save-edit-test="saveEditTest"
         @delete-test="deleteTest"
         :tests="tests"
       />
@@ -49,8 +49,12 @@ export default {
     runTest(id) {
       console.log("runTest " + id);
     },
-    editTest(id) {
-      console.log("editTest " + id);
+    saveEditTest(test) {
+      console.log(test);
+      var tempTests = this.tests;
+      var index = tempTests.findIndex((item) => item.id == test.id);
+      tempTests[index] = test;
+      this.tests = tempTests;
     },
     deleteTest(id) {
       ElMessageBox.confirm(

@@ -2,7 +2,7 @@
   <div :key="test.id" v-for="test in tests">
     <CustomTest
       @run-test="$emit('run-test', test.id)"
-      @edit-test="$emit('edit-test', test.id)"
+      @save-edit-test="$emit('save-edit-test', test)"
       @delete-test="$emit('delete-test', test.id)"
       :test="test"
     />
@@ -19,6 +19,6 @@ export default {
   components: {
     CustomTest,
   },
-  emits: ["run-test", "edit-test", "delete-test"],
+  emits: ["run-test", "save-edit-test", "delete-test"],
 };
 </script>
