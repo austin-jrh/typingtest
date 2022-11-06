@@ -1,20 +1,24 @@
 <template>
   <el-card>
-    <el-card shadow="never">
+    <el-card shadow="never" v-show="!(gameState === 'finished')">
       <Timer :timeLeft="timeLeft" />
-      <!-- grey #d9d9d9 -->
-      <!-- red #ff8080 -->
       <span v-bind:class="getWordClass(i)" v-for="(word, i) in testWords">{{
         word
       }}</span>
     </el-card>
-
-    <el-input v-model="input" />
+    <el-card class="testResult" v-show="gameState === 'finished'">
+      <h3>Typing Test Result</h3>
+      <h1>5 WPM</h1>
+      <div>Words Per Minute</div>
+    </el-card>
+    <el-row>
+      <el-input v-model="input" />
+      <el-button type="primary" @click="onClickReset">Reset</el-button>
+    </el-row>
   </el-card>
 </template>
 
 <script>
-import { Fragment } from "vue";
 import Timer from "./Timer.vue";
 
 export default {
@@ -22,10 +26,10 @@ export default {
   props: {
     timeLeft: Number,
     testWords: Array,
+    gameState: String,
   },
   components: {
     Timer,
-    Fragment,
   },
   data() {
     return {
@@ -36,6 +40,9 @@ export default {
   },
   watch: {
     input(newInput) {
+      if (newInput.length > 0 && this.gameState === "waiting") {
+        this.$emit("start-test");
+      }
       if (newInput[newInput.length - 1] === " ") {
         var word = newInput.trim();
         console.log(word);
@@ -50,8 +57,6 @@ export default {
       const compareWord = currWord.substring(0, count);
 
       this.wrongWordIndex[this.currentWordIndex] = !(compareWord === newInput);
-
-      console.log(this.wrongWordIndex);
     },
   },
   methods: {
@@ -70,11 +75,32 @@ export default {
         return this.wrongWordIndex[i] ? "pastWrong" : "pastCorrect";
       }
     },
+
+    onClickReset() {
+      this.input = "";
+      this.currentWordIndex = 0;
+      this.wrongWordIndex = [];
+      this.$emit("reset-test");
+    },
   },
+  emits: ["start-test", "reset-test"],
 };
 </script>
 
 <style scoped>
+h1 {
+  font-size: 50px;
+}
+.el-input {
+  width: 500px;
+}
+
+.el-row {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 span {
   display: inline-block;
   margin-left: 10px;

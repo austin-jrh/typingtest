@@ -1,5 +1,7 @@
 <template>
-  <h1>{{ timeLeft }}</h1>
+  <div>
+    <h1>{{ timeLeft }}</h1>
+  </div>
 </template>
 
 <script>
@@ -11,5 +13,16 @@ export default {
       required: true,
     },
   },
+  data() {
+    return {};
+  },
+  methods: {},
 };
 </script>
+
+<style scoped>
+h1 {
+  font-size: 50px;
+  color: black;
+}
+</style>

@@ -2,7 +2,13 @@
   <el-container>
     <el-main>
       <UserProfile />
-      <TypingTest :timeLeft="timeLeft" :testWords="testWords" />
+      <TypingTest
+        :timeLeft="timeLeft"
+        :testWords="testWords"
+        :gameState="gameState"
+        @start-test="startGame"
+        @reset-test="resetGame"
+      />
       <AddCustomTest @add-test="addTest" />
       <CustomTests
         @run-test="runTest"
@@ -34,11 +40,12 @@ export default {
   data() {
     return {
       tests: [],
-      timeLimit: 20,
+      timeLimit: 3,
       timePassed: 0,
       timerInterval: null,
       currentLogin: "guest",
       testWords: [],
+      gameState: "waiting", //waiting, playing, finished
     };
   },
   methods: {
@@ -118,6 +125,21 @@ export default {
     onTimesUp() {
       clearInterval(this.timerInterval);
     },
+    changeTime() {},
+
+    // Game Loop
+    startGame() {
+      console.log("startGame");
+      this.gameState = "playing";
+      this.startTimer();
+    },
+    resetGame() {
+      this.testWords = RandomWordsGen.getWords(200);
+      this.timePassed = 0;
+      clearInterval(this.timerInterval);
+      this.gameState = "waiting";
+      console.log(`resetGame ${this.gameState}`);
+    },
   },
   async created() {
     try {
@@ -130,7 +152,7 @@ export default {
     console.log(this.testWords);
   },
   mounted() {
-    this.startTimer();
+    //this.startTimer();
     //this.getDataAPI(profileURL);
   },
   computed: {
@@ -143,6 +165,8 @@ export default {
     timeLeft(newValue) {
       if (newValue === 0) {
         this.onTimesUp();
+        this.gameState = "finished";
+        console.log(this.gameState);
       }
     },
   },
