@@ -48,31 +48,45 @@ export default {
       var data = test;
       data.owner = this.currentLogin;
       console.log(`addTest() : ${data}`);
-      await this.createTest(data);
-      this.tests = await this.getData(testsURL);
-      ElMessage({
-        type: "success",
-        message: "Add successful.",
-      });
+      this.createTestAPI(data)
+        .then(() => {
+          this.getDataAPI(testsURL).then((response) => {
+            this.tests = response;
+            ElMessage({
+              type: "success",
+              message: "Add successful.",
+            });
+          });
+        })
+        .catch((error) => {
+          ElMessage({
+            type: "danger",
+            message: `Something went wrong. ${error}`,
+          });
+        });
     },
     runTest(id) {
       console.log("runTest " + id);
     },
     async saveEditTest(test) {
-      // await this.editTest(test);
-      // this.tests = await this.getData(testsURL);
-      // console.log(test);
-      this.editTest(test).then(() => {
-        this.getData(testsURL).then((response) => {
-          this.tests = response;
+      this.editTestAPI(test)
+        .then(() => {
+          this.getDataAPI(testsURL).then((response) => {
+            this.tests = response;
+            ElMessage({
+              type: "warning",
+              message: "Edit successful.",
+            });
+          });
+        })
+        .catch((error) => {
+          ElMessage({
+            type: "danger",
+            message: `Something went wrong. ${error}`,
+          });
         });
-      });
-      // var tempTests = this.tests;
-      // var index = tempTests.findIndex((item) => item.id == test.id);
-      // tempTests[index] = test;
-      // this.tests = tempTests;
     },
-    deleteTest(id) {
+    async deleteTest(id) {
       ElMessageBox.confirm(
         "Are you sure you want to delete this test?",
         "Warning",
@@ -83,10 +97,14 @@ export default {
         }
       )
         .then(() => {
-          this.tests = this.tests.filter((test) => test.id !== id);
-          ElMessage({
-            type: "success",
-            message: "Delete completed.",
+          this.deleteTestAPI(id).then(() => {
+            this.getDataAPI(testsURL).then((response) => {
+              this.tests = response;
+              ElMessage({
+                type: "success",
+                message: "Delete completed.",
+              });
+            });
           });
         })
         .catch(() => {
@@ -103,7 +121,7 @@ export default {
     },
 
     // API
-    async getData(url) {
+    async getDataAPI(url) {
       try {
         let response = await fetch(url);
 
@@ -116,7 +134,31 @@ export default {
         console.log(err.message);
       }
     },
-    async createTest(data) {
+    async getTestAPI(_id) {
+      await fetch(
+        testsURL +
+          "/test" +
+          new URLSearchParams({
+            owner: this.currentLogin,
+            id: _id,
+          }),
+        {
+          method: "GET",
+          mode: "cors",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      )
+        .then((response) => response.json())
+        .then((data) => {
+          return data.row;
+        })
+        .catch((error) => {
+          console.error("Error", error);
+        });
+    },
+    async createTestAPI(data) {
       try {
         await fetch(testsURL, {
           method: "POST",
@@ -130,7 +172,7 @@ export default {
         console.log(err.message);
       }
     },
-    async editTest(data) {
+    async editTestAPI(data) {
       await fetch(testsURL, {
         method: "PATCH",
         mode: "cors",
@@ -138,13 +180,24 @@ export default {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(data),
-      })
-        // .then(() => {
-        //   this.getData(testsURL);
-        // })
-        .catch((error) => {
-          console.error("Error ", error);
-        });
+      }).catch((error) => {
+        console.error("Error ", error);
+      });
+    },
+    async deleteTestAPI(_id) {
+      let url =
+        testsURL +
+        "/test?" +
+        new URLSearchParams({ owner: this.currentLogin, id: _id });
+      await fetch(url, {
+        method: "DELETE",
+        mode: "cors",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }).catch((error) => {
+        console.error("Error", error);
+      });
     },
   },
   async created() {
@@ -169,14 +222,14 @@ export default {
     //   },
     // ];
     try {
-      this.tests = await this.getData(testsURL);
+      this.tests = await this.getDataAPI(testsURL);
     } catch (error) {
       console.log(error.message);
     }
   },
   mounted() {
     this.startTimer();
-    //this.getData(profileURL);
+    //this.getDataAPI(profileURL);
   },
   computed: {
     timeLeft() {
