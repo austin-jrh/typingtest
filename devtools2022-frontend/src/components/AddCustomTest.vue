@@ -51,13 +51,12 @@ export default {
       }
 
       const newTest = {
-        id: Math.floor(Math.random() * 100000),
         name: this.name,
         description: this.description,
         words: this.words,
       };
 
-      console.log(newTest);
+      // console.log(newTest);
 
       this.$emit("add-test", newTest);
 

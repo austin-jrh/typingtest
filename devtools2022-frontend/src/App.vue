@@ -21,6 +21,9 @@ import AddCustomTest from "./components/AddCustomTest.vue";
 import TypingTest from "./components/TypingTest.vue";
 import { ElMessage, ElMessageBox } from "element-plus";
 
+const profileURL = "http://localhost:3001/profiles";
+const testsURL = "http://localhost:3001/tests";
+
 export default {
   name: "App",
   components: {
@@ -35,12 +38,18 @@ export default {
       timeLimit: 20,
       timePassed: 0,
       timerInterval: null,
+      currentLogin: "guest",
     };
   },
   methods: {
     // Custom Test functionalities
-    addTest(test) {
-      this.tests = [test, ...this.tests];
+    async addTest(test) {
+      //this.tests = [test, ...this.tests];
+      var data = test;
+      data.owner = this.currentLogin;
+      console.log(`addTest() : ${data}`);
+      await this.createTest(data);
+      this.tests = await this.getData(testsURL);
       ElMessage({
         type: "success",
         message: "Add successful.",
@@ -49,12 +58,19 @@ export default {
     runTest(id) {
       console.log("runTest " + id);
     },
-    saveEditTest(test) {
-      console.log(test);
-      var tempTests = this.tests;
-      var index = tempTests.findIndex((item) => item.id == test.id);
-      tempTests[index] = test;
-      this.tests = tempTests;
+    async saveEditTest(test) {
+      // await this.editTest(test);
+      // this.tests = await this.getData(testsURL);
+      // console.log(test);
+      this.editTest(test).then(() => {
+        this.getData(testsURL).then((response) => {
+          this.tests = response;
+        });
+      });
+      // var tempTests = this.tests;
+      // var index = tempTests.findIndex((item) => item.id == test.id);
+      // tempTests[index] = test;
+      // this.tests = tempTests;
     },
     deleteTest(id) {
       ElMessageBox.confirm(
@@ -85,32 +101,82 @@ export default {
     onTimesUp() {
       clearInterval(this.timerInterval);
     },
+
+    // API
+    async getData(url) {
+      try {
+        let response = await fetch(url);
+
+        if (response.status === 200) {
+          let data = await response.json();
+          console.log(data);
+          return data.rows;
+        }
+      } catch (err) {
+        console.log(err.message);
+      }
+    },
+    async createTest(data) {
+      try {
+        await fetch(testsURL, {
+          method: "POST",
+          mode: "cors",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        });
+      } catch (err) {
+        console.log(err.message);
+      }
+    },
+    async editTest(data) {
+      await fetch(testsURL, {
+        method: "PATCH",
+        mode: "cors",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      })
+        // .then(() => {
+        //   this.getData(testsURL);
+        // })
+        .catch((error) => {
+          console.error("Error ", error);
+        });
+    },
   },
-  created() {
-    // typically, we make a request here
-    this.tests = [
-      {
-        id: 1,
-        name: "Test 1",
-        description: "This is test 1",
-        words: "hi hello world how are you",
-      },
-      {
-        id: 2,
-        name: "Test 2",
-        description: "This is the second test",
-        words: "ni hao ma wo hen xie",
-      },
-      {
-        id: 3,
-        name: "Test 3",
-        description: "Third test woot woot!",
-        words: "one two three four five",
-      },
-    ];
+  async created() {
+    // this.tests = [
+    //   {
+    //     id: 1,
+    //     name: "Test 1",
+    //     description: "This is test 1",
+    //     words: "hi hello world how are you",
+    //   },
+    //   {
+    //     id: 2,
+    //     name: "Test 2",
+    //     description: "This is the second test",
+    //     words: "ni hao ma wo hen xie",
+    //   },
+    //   {
+    //     id: 3,
+    //     name: "Test 3",
+    //     description: "Third test woot woot!",
+    //     words: "one two three four five",
+    //   },
+    // ];
+    try {
+      this.tests = await this.getData(testsURL);
+    } catch (error) {
+      console.log(error.message);
+    }
   },
   mounted() {
     this.startTimer();
+    //this.getData(profileURL);
   },
   computed: {
     timeLeft() {

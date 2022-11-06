@@ -28,8 +28,8 @@
             <el-button
               type="warning"
               @click="
-                $emit('save-edit-test', test);
                 hideEditForm();
+                $emit('save-edit-test', test);
               "
               >Save</el-button
             >
