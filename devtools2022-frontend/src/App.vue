@@ -2,7 +2,7 @@
   <el-container>
     <el-main>
       <UserProfile />
-      <TypingTest :timeLeft="timeLeft" />
+      <TypingTest :timeLeft="timeLeft" :testWords="testWords" />
       <AddCustomTest @add-test="addTest" />
       <CustomTests
         @run-test="runTest"
@@ -20,7 +20,8 @@ import CustomTests from "./components/CustomTests.vue";
 import AddCustomTest from "./components/AddCustomTest.vue";
 import TypingTest from "./components/TypingTest.vue";
 import { ElMessage, ElMessageBox } from "element-plus";
-import Service from "./service.js";
+import Service from "./Service.js";
+import RandomWordsGen from "./RandomWordsGen.js";
 
 export default {
   name: "App",
@@ -37,6 +38,7 @@ export default {
       timePassed: 0,
       timerInterval: null,
       currentLogin: "guest",
+      testWords: [],
     };
   },
   methods: {
@@ -123,6 +125,9 @@ export default {
     } catch (error) {
       console.log(error.message);
     }
+
+    this.testWords = RandomWordsGen.getWords(200);
+    console.log(this.testWords);
   },
   mounted() {
     this.startTimer();
