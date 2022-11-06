@@ -15,14 +15,12 @@
 </template>
 
 <script>
-import UserProfile from "./components/UserProfile";
+import UserProfile from "./components/UserProfile.vue";
 import CustomTests from "./components/CustomTests.vue";
 import AddCustomTest from "./components/AddCustomTest.vue";
 import TypingTest from "./components/TypingTest.vue";
 import { ElMessage, ElMessageBox } from "element-plus";
-
-const profileURL = "http://localhost:3001/profiles";
-const testsURL = "http://localhost:3001/tests";
+import Service from "./service.js";
 
 export default {
   name: "App",
@@ -44,13 +42,11 @@ export default {
   methods: {
     // Custom Test functionalities
     async addTest(test) {
-      //this.tests = [test, ...this.tests];
       var data = test;
       data.owner = this.currentLogin;
-      console.log(`addTest() : ${data}`);
-      this.createTestAPI(data)
+      Service.createTest(data)
         .then(() => {
-          this.getDataAPI(testsURL).then((response) => {
+          Service.getTests().then((response) => {
             this.tests = response;
             ElMessage({
               type: "success",
@@ -69,9 +65,9 @@ export default {
       console.log("runTest " + id);
     },
     async saveEditTest(test) {
-      this.editTestAPI(test)
+      Service.editTest(test)
         .then(() => {
-          this.getDataAPI(testsURL).then((response) => {
+          Service.getTests().then((response) => {
             this.tests = response;
             ElMessage({
               type: "warning",
@@ -97,8 +93,8 @@ export default {
         }
       )
         .then(() => {
-          this.deleteTestAPI(id).then(() => {
-            this.getDataAPI(testsURL).then((response) => {
+          Service.deleteTest(this.currentLogin, id).then(() => {
+            Service.getTests().then((response) => {
               this.tests = response;
               ElMessage({
                 type: "success",
@@ -107,8 +103,9 @@ export default {
             });
           });
         })
-        .catch(() => {
+        .catch((err) => {
           ElMessage({ type: "info", message: "Delete canceled." });
+          console.log(err);
         });
     },
 
@@ -119,110 +116,10 @@ export default {
     onTimesUp() {
       clearInterval(this.timerInterval);
     },
-
-    // API
-    async getDataAPI(url) {
-      try {
-        let response = await fetch(url);
-
-        if (response.status === 200) {
-          let data = await response.json();
-          console.log(data);
-          return data.rows;
-        }
-      } catch (err) {
-        console.log(err.message);
-      }
-    },
-    async getTestAPI(_id) {
-      await fetch(
-        testsURL +
-          "/test" +
-          new URLSearchParams({
-            owner: this.currentLogin,
-            id: _id,
-          }),
-        {
-          method: "GET",
-          mode: "cors",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      )
-        .then((response) => response.json())
-        .then((data) => {
-          return data.row;
-        })
-        .catch((error) => {
-          console.error("Error", error);
-        });
-    },
-    async createTestAPI(data) {
-      try {
-        await fetch(testsURL, {
-          method: "POST",
-          mode: "cors",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(data),
-        });
-      } catch (err) {
-        console.log(err.message);
-      }
-    },
-    async editTestAPI(data) {
-      await fetch(testsURL, {
-        method: "PATCH",
-        mode: "cors",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      }).catch((error) => {
-        console.error("Error ", error);
-      });
-    },
-    async deleteTestAPI(_id) {
-      let url =
-        testsURL +
-        "/test?" +
-        new URLSearchParams({ owner: this.currentLogin, id: _id });
-      await fetch(url, {
-        method: "DELETE",
-        mode: "cors",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }).catch((error) => {
-        console.error("Error", error);
-      });
-    },
   },
   async created() {
-    // this.tests = [
-    //   {
-    //     id: 1,
-    //     name: "Test 1",
-    //     description: "This is test 1",
-    //     words: "hi hello world how are you",
-    //   },
-    //   {
-    //     id: 2,
-    //     name: "Test 2",
-    //     description: "This is the second test",
-    //     words: "ni hao ma wo hen xie",
-    //   },
-    //   {
-    //     id: 3,
-    //     name: "Test 3",
-    //     description: "Third test woot woot!",
-    //     words: "one two three four five",
-    //   },
-    // ];
     try {
-      this.tests = await this.getDataAPI(testsURL);
+      this.tests = await Service.getTests();
     } catch (error) {
       console.log(error.message);
     }
