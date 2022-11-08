@@ -96,6 +96,19 @@ class Service {
       console.error("Error", error);
     });
   }
+
+  static async createUser(user) {
+    const response = await fetch(profileURL, {
+      method: "POST",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(user),
+    })
+    const data = await response.json();
+    return data
+  }
 }
 
 export default Service;

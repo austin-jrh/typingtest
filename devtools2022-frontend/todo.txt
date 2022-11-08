@@ -1,0 +1,17 @@
+## Must have
+- User profile (login, register, change display name, logout)
+- WPM result (result and proper calculation)
+- Apply custom words to current test
+- Dockerfile
+- NGINX
+
+## Should have
+- Proper CSS
+
+## Could have
+- Able to change time limit of each test
+- Change Login and Password for User
+
+## Won't have
+- Proper profile database
+- Use proper API (axios, knex, preparedStatements)

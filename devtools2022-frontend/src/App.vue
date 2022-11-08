@@ -1,7 +1,7 @@
 <template>
   <el-container>
     <el-main>
-      <UserProfile />
+      <UserProfile @add-user="addUser" :user="user" />
       <TypingTest
         :timeLeft="timeLeft"
         :testWords="testWords"
@@ -46,6 +46,11 @@ export default {
       currentLogin: "guest",
       testWords: [],
       gameState: "waiting", //waiting, playing, finished
+      user: {
+        login: "",
+        displayName: "",
+        password: "",
+      },
     };
   },
   methods: {
@@ -116,6 +121,28 @@ export default {
           ElMessage({ type: "info", message: "Delete canceled." });
           console.log(err);
         });
+    },
+
+    // User functionalities
+    async addUser(user) {
+      Service.createUser(user).then((response) => {
+        console.log(response);
+      });
+      // .then(() => {
+      //   Service.getTests().then((response) => {
+      //     this.tests = response;
+      //     ElMessage({
+      //       type: "success",
+      //       message: "Add successful.",
+      //     });
+      //   });
+      // })
+      // .catch((error) => {
+      //   ElMessage({
+      //     type: "danger",
+      //     message: `Something went wrong. ${error}`,
+      //   });
+      // });
     },
 
     // Timer functionalities
