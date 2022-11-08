@@ -1,17 +1,16 @@
 <template>
   <div class="userProfile">
     <el-container>
-      <!-- <el-header> User </el-header> -->
       <!-- Login -->
       <el-main v-show="shouldShowScreen('login')">
-        <el-form ref="form" :model="user" label-width="120px">
+        <el-form ref="form" :model="inputUser" label-width="120px">
           <el-form-item label="Login">
-            <el-input placeholder="Login" v-model="user.login"></el-input>
+            <el-input placeholder="Login" v-model="inputUser.login"></el-input>
           </el-form-item>
           <el-form-item label="Password">
             <el-input
               placeholder="Password (NOT SECURE)"
-              v-model="user.password"
+              v-model="inputUser.password"
               show-password
             ></el-input>
           </el-form-item>
@@ -38,21 +37,21 @@
       </el-main>
       <!-- Register -->
       <el-main v-show="shouldShowScreen('register')">
-        <el-form ref="form" :model="newUser" label-width="120px">
+        <el-form ref="form" :model="inputUser" label-width="120px">
           <el-form-item label="Login">
-            <el-input placeholder="Login" v-model="newUser.login"></el-input>
+            <el-input placeholder="Login" v-model="inputUser.login"></el-input>
           </el-form-item>
           <el-form-item label="Display Name">
             <el-input
               placeholder="Display Name"
-              v-model="newUser.displayName"
+              v-model="inputUser.displayName"
             ></el-input>
           </el-form-item>
           <el-form-item label="Password">
             <el-input
               placeholder="Password (NOT SECURE)"
               show-password
-              v-model="newUser.password"
+              v-model="inputUser.password"
             ></el-input>
           </el-form-item>
           <el-form-item>
@@ -65,11 +64,14 @@
       <el-main v-show="shouldShowScreen('edit')">
         <el-form ref="form" label-width="120px">
           <el-form-item label="Display Name">
-            <el-input placeholder="New Display Name"></el-input>
+            <el-input
+              placeholder="New Display Name"
+              v-model="inputUser.displayName"
+            ></el-input>
           </el-form-item>
           <el-form-item>
             <el-button @click="onSaveEdit">Save</el-button>
-            <el-button @click="onCancelEdit">Cancel</el-button>
+            <el-button @click="onCancelEdit" type="info">Cancel</el-button>
           </el-form-item>
         </el-form>
       </el-main>
@@ -78,6 +80,7 @@
 </template>
 
 <script>
+import { ElMessage } from "element-plus";
 import Service from "../Service.js";
 
 export default {
@@ -87,7 +90,8 @@ export default {
   },
   data() {
     return {
-      newUser: {
+      inputUser: {
+        // separated from "user" so that we can clear the fields
         login: "",
         displayName: "",
         password: "",
@@ -98,73 +102,114 @@ export default {
   methods: {
     onSignUp(e) {
       e.preventDefault();
+      this.clearInputUser();
       this.currentScreen = "register";
     },
     async onLogin(e) {
       e.preventDefault();
+      //check if login is filled
+      if (this.inputUser.login === "") {
+        ElMessage({
+          message: "Please fill in Login field",
+          type: "warning",
+        });
+        return;
+      }
       //TODO: check if have user with credentials
-      const response = await Service.loginUser(this.user);
+      const response = await Service.loginUser(this.inputUser);
       if (response === null) {
         //user does not exist
+        ElMessage({
+          type: "error",
+          message: "Wrong login or password.",
+        });
       } else {
-        this.user.login = response.login;
-        this.user.displayName = response.displayName;
-        this.user.password = response.password;
-        this.user.highscore = response.highscore;
+        this.updateUser(response);
         this.currentScreen = "user";
+        this.clearInputUser();
+        this.$emit("login-user");
+        ElMessage({
+          type: "success",
+          message: "Login successful.",
+        });
       }
-      // if response.
-      // switch (response.status) {
-      //   case "success":
-      //     this.user.login = this.newUser.login;
-      //     this.user.displayName = this.newUser.displayName;
-      //     this.user.password = this.newUser.password;
-      //     this.user.highscore = 0;
-      //     this.currentScreen = "user";
-      //     break;
-      //   case "error":
-      //     break;
-      // }
-      //this.currentScreen = "user";
     },
     onCancelRegister(e) {
       e.preventDefault();
+      this.clearInputUser();
       this.currentScreen = "login";
     },
     async onRegister(e) {
       e.preventDefault();
       //TODO: validate if all fields are filled
+      if (this.inputUser.login === "" || this.inputUser.displayName === "") {
+        ElMessage({
+          type: "warning",
+          message: "Please enter Login and Display Name.",
+        });
+        return;
+      }
       //validate if not existing user
-      const response = await Service.createUser(this.newUser);
+      const response = await Service.createUser(this.inputUser);
       switch (response.status) {
         case "success":
-          this.user.login = this.newUser.login;
-          this.user.displayName = this.newUser.displayName;
-          this.user.password = this.newUser.password;
-          this.user.highscore = 0;
+          this.inputUser.highscore = 0;
+          this.updateUser(this.inputUser);
+          this.clearInputUser();
           this.currentScreen = "user";
           break;
         case "error":
+          ElMessage({
+            type: "error",
+            message: response.message,
+          });
           break;
+        default:
+          console.log("something went wrong...");
       }
-
-      //this.currentScreen = "user";
     },
     onLogout(e) {
       e.preventDefault();
+      this.user.login = "";
+      this.user.displayName = "";
+      this.user.password = "";
+      this.user.highscore = "";
       this.currentScreen = "login";
+      this.$emit("logout-user");
     },
     onEditProfile(e) {
       e.preventDefault();
       //TODO: fill up the fields with current info
+      this.inputUser.login = this.user.login;
+      this.inputUser.displayName = this.user.displayName;
+      this.inputUser.password = this.user.password;
+      this.inputUser.highscore = this.user.highscore;
       this.currentScreen = "edit";
     },
-    onSaveEdit(e) {
+    async onSaveEdit(e) {
       e.preventDefault();
+      const response = await Service.updateUser(this.inputUser);
+      switch (response.status) {
+        case "success":
+          this.updateUser(this.inputUser);
+          ElMessage({
+            type: "success",
+            message: "Updated profile.",
+          });
+          break;
+        case "error":
+          ElMessage({
+            type: "warning",
+            message: "Error. Unable to update profile.",
+          });
+        default:
+          console.log("something went wrong...");
+      }
       this.currentScreen = "user";
     },
     onCancelEdit(e) {
       e.preventDefault();
+      this.clearInputUser();
       this.currentScreen = "user";
     },
     shouldShowScreen(screen) {
@@ -173,8 +218,19 @@ export default {
     welcomeMessage() {
       return `Welcome, ${user.displayName}`;
     },
+    clearInputUser() {
+      this.inputUser.login = "";
+      this.inputUser.displayName = "";
+      this.inputUser.password = "";
+    },
+    updateUser(newUser) {
+      this.user.login = newUser.login;
+      this.user.displayName = newUser.displayName;
+      this.user.password = newUser.password;
+      this.user.highscore = newUser.highscore;
+    },
   },
-  emits: ["add-user"],
+  emits: ["login-user", "logout-user"],
 };
 </script>
 

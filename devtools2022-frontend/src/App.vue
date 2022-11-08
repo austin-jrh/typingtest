@@ -1,7 +1,11 @@
 <template>
   <el-container>
     <el-main>
-      <UserProfile @add-user="addUser" :user="user" />
+      <UserProfile
+        @login-user="loginUser"
+        @logout-user="logoutUser"
+        :user="user"
+      />
       <TypingTest
         :timeLeft="timeLeft"
         :testWords="testWords"
@@ -75,8 +79,11 @@ export default {
           });
         });
     },
-    runTest(id) {
-      console.log("runTest " + id);
+    async runTest(id) {
+      Service.getTestByID(id).then((response) => {
+        var words = RandomWordsGen.convertToArray(response.words);
+        this.testWords = RandomWordsGen.shuffleWords(words);
+      });
     },
     async saveEditTest(test) {
       Service.editTest(test)
@@ -122,27 +129,23 @@ export default {
           console.log(err);
         });
     },
+    async getUserTests() {
+      Service.getTestsFromUser(this.user.login).then((response) => {
+        console.log(response);
+        this.tests = response;
+      });
+    },
 
     // User functionalities
-    async addUser(user) {
-      Service.createUser(user).then((response) => {
-        console.log(response);
-      });
-      // .then(() => {
-      //   Service.getTests().then((response) => {
-      //     this.tests = response;
-      //     ElMessage({
-      //       type: "success",
-      //       message: "Add successful.",
-      //     });
-      //   });
-      // })
-      // .catch((error) => {
-      //   ElMessage({
-      //     type: "danger",
-      //     message: `Something went wrong. ${error}`,
-      //   });
-      // });
+    loginUser() {
+      // save locally the current logged in user
+      // get the tests of user logged in
+      this.getUserTests();
+    },
+
+    logoutUser() {
+      // reset local user
+      this.tests = [];
     },
 
     // Timer functionalities
@@ -169,18 +172,17 @@ export default {
     },
   },
   async created() {
-    try {
-      this.tests = await Service.getTests();
-    } catch (error) {
-      console.log(error.message);
-    }
+    // try {
+    //   this.tests = await Service.getTests();
+    // } catch (error) {
+    //   console.log(error.message);
+    // }
 
     this.testWords = RandomWordsGen.getWords(200);
     console.log(this.testWords);
   },
   mounted() {
-    //this.startTimer();
-    //this.getDataAPI(profileURL);
+    //this.getUserTests();
   },
   computed: {
     timeLeft() {

@@ -1,5 +1,6 @@
 const profileURL = "http://localhost:3001/profiles";
 const testsURL = "http://localhost:3001/tests";
+const testIdURL = "http://localhost:3001/testID"
 
 class Service {
   // Get posts
@@ -28,29 +29,33 @@ class Service {
     return await Service.getData(profileURL)
   }
 
-  static async getTest(_owner, _id) {
-    await fetch(
-      testsURL +
-        "/test" +
-        new URLSearchParams({
-          owner: _owner,
-          id: _id,
-        }),
-      {
-        method: "GET",
+  static async getTestsFromUser(_owner) {
+    const response = await fetch(testsURL + "/test?" + new URLSearchParams({
+      owner: _owner
+    }), {
+      method: "GET",
         mode: "cors",
         headers: {
           "Content-Type": "application/json",
         },
-      }
-    )
-      .then((response) => response.json())
-      .then((data) => {
-        return data.row;
-      })
-      .catch((error) => {
-        console.error("Error", error);
-      });
+    })
+    const data = await response.json()
+    console.log(data)
+    return data
+  }
+
+  static async getTestByID(_id) {
+    const response = await fetch(testIdURL + "/?" + new URLSearchParams({
+      id: _id
+    }), {
+      method: "GET",
+        mode: "cors",
+        headers: {
+          "Content-Type": "application/json",
+        },
+    })
+    const data = await response.json()
+    return data
   }
 
   static async createTest(data) {
@@ -122,6 +127,19 @@ class Service {
     if(response.status === 204){
       return null
     }
+    const data = await response.json();
+    return data
+  }
+
+  static async updateUser(user) {
+    const response = await fetch(profileURL, {
+      method: "PATCH",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(user),
+    })
     const data = await response.json();
     return data
   }

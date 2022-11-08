@@ -1,6 +1,7 @@
 ## Must have
-- User profile (login, register, change display name, logout)
-- WPM result (result and proper calculation)
+- User profile (persistent user, saved locally)
+- WPM result (result and proper calculation, save highscore to user)
+- Custom test by User
 - Apply custom words to current test
 - Dockerfile
 - NGINX
@@ -15,3 +16,4 @@
 ## Won't have
 - Proper profile database
 - Use proper API (axios, knex, preparedStatements)
+- Proper feedback and notifications
