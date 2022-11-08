@@ -25,7 +25,9 @@
       <el-main v-show="shouldShowScreen('user')">
         <h3>Welcome, {{ user.displayName }}</h3>
         <el-descriptions :column="1" direction="horizontal">
-          <el-descriptions-item label="Best WPM">10 WPM</el-descriptions-item>
+          <el-descriptions-item label="Best WPM"
+            >{{ user.highscore }} WPM</el-descriptions-item
+          >
         </el-descriptions>
         <el-row>
           <el-button type="default" @click="onEditProfile"
@@ -76,7 +78,6 @@
 </template>
 
 <script>
-import { breakpointsTailwind } from "@vueuse/core";
 import Service from "../Service.js";
 
 export default {
@@ -99,10 +100,32 @@ export default {
       e.preventDefault();
       this.currentScreen = "register";
     },
-    onLogin(e) {
+    async onLogin(e) {
       e.preventDefault();
       //TODO: check if have user with credentials
-      this.currentScreen = "user";
+      const response = await Service.loginUser(this.user);
+      if (response === null) {
+        //user does not exist
+      } else {
+        this.user.login = response.login;
+        this.user.displayName = response.displayName;
+        this.user.password = response.password;
+        this.user.highscore = response.highscore;
+        this.currentScreen = "user";
+      }
+      // if response.
+      // switch (response.status) {
+      //   case "success":
+      //     this.user.login = this.newUser.login;
+      //     this.user.displayName = this.newUser.displayName;
+      //     this.user.password = this.newUser.password;
+      //     this.user.highscore = 0;
+      //     this.currentScreen = "user";
+      //     break;
+      //   case "error":
+      //     break;
+      // }
+      //this.currentScreen = "user";
     },
     onCancelRegister(e) {
       e.preventDefault();
@@ -118,6 +141,7 @@ export default {
           this.user.login = this.newUser.login;
           this.user.displayName = this.newUser.displayName;
           this.user.password = this.newUser.password;
+          this.user.highscore = 0;
           this.currentScreen = "user";
           break;
         case "error":

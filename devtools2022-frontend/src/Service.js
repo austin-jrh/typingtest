@@ -109,6 +109,22 @@ class Service {
     const data = await response.json();
     return data
   }
+
+  static async loginUser(user) {
+    let url = profileURL + "/profile?" + new URLSearchParams({ login: user.login, password: user.password });
+    const response = await fetch(url, {
+      method: "GET",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+    if(response.status === 204){
+      return null
+    }
+    const data = await response.json();
+    return data
+  }
 }
 
 export default Service;
