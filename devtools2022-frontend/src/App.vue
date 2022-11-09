@@ -13,6 +13,11 @@
         :gameState="gameState"
         @start-test="startGame"
         @reset-test="resetGame"
+        :timeLimit="timeLimit"
+        :timePassed="timePassed"
+        @finish-test="finishGame"
+        ref="typingTest"
+        @update-score="updateScore"
       />
       <AddCustomTest @add-test="addTest" />
       <CustomTests
@@ -45,7 +50,7 @@ export default {
   data() {
     return {
       tests: [],
-      timeLimit: 3,
+      timeLimit: 25,
       timePassed: 0,
       timerInterval: null,
       currentLogin: "guest",
@@ -55,6 +60,7 @@ export default {
         login: "",
         displayName: "",
         password: "",
+        highscore: 0,
       },
     };
   },
@@ -84,6 +90,9 @@ export default {
       Service.getTestByID(id).then((response) => {
         var words = RandomWordsGen.convertToArray(response.words);
         this.testWords = RandomWordsGen.shuffleWords(words);
+        this.resetTimer();
+        this.gameState = "waiting";
+        this.$refs.typingTest.clearTypingTest();
       });
     },
     async saveEditTest(test) {
@@ -189,6 +198,10 @@ export default {
       clearInterval(this.timerInterval);
     },
     changeTime() {},
+    resetTimer() {
+      this.timePassed = 0;
+      clearInterval(this.timerInterval);
+    },
 
     // Game Loop
     startGame() {
@@ -198,10 +211,21 @@ export default {
     },
     resetGame() {
       this.testWords = RandomWordsGen.getWords(200);
-      this.timePassed = 0;
-      clearInterval(this.timerInterval);
+      this.resetTimer();
       this.gameState = "waiting";
       console.log(`resetGame ${this.gameState}`);
+    },
+    finishGame() {
+      this.onTimesUp();
+      this.gameState = "finished";
+      console.log(this.gameState);
+    },
+    updateScore(score) {
+      console.log(score);
+      if (score > this.user.highscore) {
+        this.user.highscore = score;
+        Service.updateUser(this.user);
+      }
     },
   },
   async created() {

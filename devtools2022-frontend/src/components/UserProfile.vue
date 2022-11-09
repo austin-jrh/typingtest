@@ -173,7 +173,7 @@ export default {
       this.user.login = "";
       this.user.displayName = "";
       this.user.password = "";
-      this.user.highscore = "";
+      this.user.highscore = 0;
       this.currentScreen = "login";
       this.$emit("logout-user");
     },
