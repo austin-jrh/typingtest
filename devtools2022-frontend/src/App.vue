@@ -5,6 +5,7 @@
         @login-user="loginUser"
         @logout-user="logoutUser"
         :user="user"
+        ref="userProfile"
       />
       <TypingTest
         :timeLeft="timeLeft"
@@ -140,12 +141,44 @@ export default {
     loginUser() {
       // save locally the current logged in user
       // get the tests of user logged in
+      this.saveLocalUser(this.user);
       this.getUserTests();
     },
 
     logoutUser() {
       // reset local user
+      var emptyUser = { login: "", password: "" };
+      this.saveLocalUser(emptyUser);
       this.tests = [];
+    },
+
+    loadLocalUser() {
+      // var emptyUser = { login: "", password: "" };
+      // const data = JSON.stringify(emptyUser);
+      // window.localStorage.setItem("localUser", data);
+
+      // var user = window.localStorage.getItem("localUser");
+      // console.log(user);
+
+      var user = window.localStorage.getItem("localUser");
+      if (user === null) {
+        var emptyUser = { login: "", password: "" };
+        const data = JSON.stringify(emptyUser);
+        window.localStorage.setItem("localUser", data);
+        return emptyUser;
+      }
+
+      return JSON.parse(user);
+    },
+
+    saveLocalUser(user) {
+      window.localStorage.setItem(
+        "localUser",
+        JSON.stringify({
+          login: user.login,
+          password: user.password,
+        })
+      );
     },
 
     // Timer functionalities
@@ -183,6 +216,13 @@ export default {
   },
   mounted() {
     //this.getUserTests();
+    // this.saveLocalUser();
+
+    var user = this.loadLocalUser();
+    console.log(user);
+    this.user.login = user.login;
+    this.user.password = user.password;
+    this.$refs.userProfile.onMount();
   },
   computed: {
     timeLeft() {

@@ -229,7 +229,30 @@ export default {
       this.user.password = newUser.password;
       this.user.highscore = newUser.highscore;
     },
+
+    async onMount() {
+      if (this.user.login !== "") {
+        const response = await Service.loginUser(this.user);
+        if (response === null) {
+          //user does not exist
+          ElMessage({
+            type: "error",
+            message: "Wrong login or password.",
+          });
+        } else {
+          this.updateUser(response);
+          this.currentScreen = "user";
+          this.clearInputUser();
+          this.$emit("login-user");
+          ElMessage({
+            type: "success",
+            message: "Login successful.",
+          });
+        }
+      }
+    },
   },
+  mounted() {},
   emits: ["login-user", "logout-user"],
 };
 </script>
