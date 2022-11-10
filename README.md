@@ -34,9 +34,65 @@ Using:
 - Sqlite (database)
 
 ## Demo
+- Login to existing user
 
+![](./devtools2022-frontend/readme_images/01_login.png)
+
+
+- Edit display name of logged in user
+
+![](./devtools2022-frontend/readme_images/02_displayName.png)
+
+
+- Custom tests
+
+![](./devtools2022-frontend/readme_images/03_customTest.png)
+
+
+- Create Custom Test
+
+![](./devtools2022-frontend/readme_images/04_createCustomTest.png)
+
+
+- Edit existing Custom test
+
+![](./devtools2022-frontend/readme_images/05_editCustomTest.png)
+
+
+- Run Custom test
+
+![](./devtools2022-frontend/readme_images/06_runCustomTest1.png)
+![](./devtools2022-frontend/readme_images/07_runCustomTest2.png)
+
+
+- Delete existing Custom test
+
+![](./devtools2022-frontend/readme_images/08_deleteCustomTest1.png)
+![](./devtools2022-frontend/readme_images/09_deleteCustomTest2.png)
 
 ## Setup
+1. Clone the repository. 
+```
+git clone https://github.com/austin-jrh/sutd-devtools2022.git
+```
 
+2. Navigate to path where the `Dockerfile` exist.
+```
+cd devtools2022-frontend/
+ls # you should be in the Dockerfile directory
+```
+
+3. Run `run.sh` to build and run Dockerfile.
+```
+./run.sh
+```
+
+4. Check if the Docker container is running.
+```
+docker ps
+```
 
 ## Security Vulnerability
+### SQL Injection attack with crafted form inputs (login)
+### Modifying the database without authorization (change highscore)
+### Access to profiles
