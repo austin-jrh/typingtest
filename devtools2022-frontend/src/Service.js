@@ -1,13 +1,13 @@
-const profileURL = "http://localhost:3001/profiles";
-const testsURL = "http://localhost:3001/tests";
-const testIdURL = "http://localhost:3001/testID"
+const profileURL = "http://18.143.123.0:3001/profiles";
+const testsURL = "http://18.143.123.0:3001/tests";
+const testIdURL = "http://18.143.123.0:3001/testID"
 
 class Service {
   // Get posts
   static async getData(url) {
     try {
       let response = await fetch(url);
-      if(response.status === 200) {
+      if (response.status === 200) {
         try {
           let data = await response.json();
           return data.rows
@@ -34,10 +34,10 @@ class Service {
       owner: _owner
     }), {
       method: "GET",
-        mode: "cors",
-        headers: {
-          "Content-Type": "application/json",
-        },
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json",
+      },
     })
     const data = await response.json()
     console.log(data)
@@ -49,10 +49,10 @@ class Service {
       id: _id
     }), {
       method: "GET",
-        mode: "cors",
-        headers: {
-          "Content-Type": "application/json",
-        },
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json",
+      },
     })
     const data = await response.json()
     return data
@@ -124,7 +124,7 @@ class Service {
         "Content-Type": "application/json",
       },
     })
-    if(response.status === 204){
+    if (response.status === 204) {
       return null
     }
     const data = await response.json();
