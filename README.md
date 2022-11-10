@@ -40,6 +40,8 @@ Using:
 - Node.js (runtime environment)
 - Express (web application framework)
 - Sqlite (database)
+- Docker (Container)
+- NGINX (Reverse proxy)
 
 ## Demo
 - Login to existing user
@@ -84,18 +86,51 @@ Using:
 git clone https://github.com/austin-jrh/sutd-devtools2022.git
 ```
 
-2. Navigate to path where the `Dockerfile` exist.
+2. Install Docker
+```
+# Install Docker packages
+sudo apt-get update
+sudo apt-get install \
+    ca-certificates \
+    curl \
+    gnupg \
+    lsb-release
+    
+# Add docker official gpg key
+sudo mkdir -p /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+
+# Setup docker repo
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+# Install docker engine
+sudo apt-get update
+sudo apt-get install docker-ce docker-ce-cli containerd.io docker-compose-plugin
+ 
+# Start the service
+sudo service docker start
+
+# Run docker without sudo,
+sudo groupadd docker
+sudo usermod -aG docker $USER
+newgrp docker 
+docker ps 
+```
+
+3. Navigate to path where the `Dockerfile` exist.
 ```
 cd devtools2022-frontend/
 ls # you should be in the Dockerfile directory
 ```
 
-3. Run `run.sh` to build and run Dockerfile.
+4. Run `run.sh` to build and run Dockerfile.
 ```
 ./run.sh
 ```
 
-4. Check if the Docker container is running.
+5. Verify if the Docker container is running.
 ```
 docker ps
 ```
