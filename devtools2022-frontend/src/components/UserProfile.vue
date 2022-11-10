@@ -22,10 +22,13 @@
       </el-main>
       <!-- Logged in, display user -->
       <el-main v-show="shouldShowScreen('user')">
-        <h3>Welcome, {{ user.displayName }}</h3>
-        <el-descriptions :column="1" direction="horizontal">
+        <h3>{{ user.displayName }}</h3>
+        <el-descriptions :column="1" direction="horizontal" border>
+          <el-descriptions-item label="Login">{{
+            user.login
+          }}</el-descriptions-item>
           <el-descriptions-item label="Best WPM"
-            >{{ user.highscore }} WPM</el-descriptions-item
+            >{{ user.highscore.toFixed(2) }} WPM</el-descriptions-item
           >
         </el-descriptions>
         <el-row>
@@ -215,9 +218,6 @@ export default {
     shouldShowScreen(screen) {
       return screen === this.currentScreen;
     },
-    welcomeMessage() {
-      return `Welcome, ${user.displayName}`;
-    },
     clearInputUser() {
       this.inputUser.login = "";
       this.inputUser.displayName = "";
@@ -263,5 +263,15 @@ header {
 }
 h3 {
   text-align: left;
+}
+.el-form {
+  width: 25%;
+  min-width: 400px;
+}
+
+.el-descriptions {
+  width: 25%;
+  min-width: 400px;
+  margin: 10px;
 }
 </style>

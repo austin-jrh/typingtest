@@ -8,31 +8,48 @@
     </el-card>
     <el-card class="testResult" v-show="gameState === 'finished'">
       <h3>Typing Test Result</h3>
-      <h1>{{ finalWPM }} WPM</h1>
+      <h1>{{ finalWPM.toFixed(2) }} WPM</h1>
       <el-descriptions :column="4" direction="vertical" border>
         <el-descriptions-item
-          label="Raw WPM"
+          label="Raw Words"
           label-align="center"
           align="center"
-          >{{ this.allTypedEntries / 5 }}</el-descriptions-item
+          width="200px"
+          >{{ (this.allTypedEntries / 5).toFixed(2) }}</el-descriptions-item
         >
         <el-descriptions-item
           label="Time taken"
           label-align="center"
           align="center"
+          width="200px"
           >{{ this.timePassed }}</el-descriptions-item
         >
         <el-descriptions-item
           label="Total Characters typed"
           label-align="center"
           align="center"
+          width="200px"
           >{{ this.allTypedEntries }}</el-descriptions-item
         >
         <el-descriptions-item
           label="Wrong Characters typed"
           label-align="center"
           align="center"
+          width="200px"
           >{{ this.uncorrectedErrors }}</el-descriptions-item
+        >
+        <el-descriptions-item
+          label="Raw WPM"
+          label-align="center"
+          align="center"
+          width="200px"
+          >{{
+            (
+              this.allTypedEntries /
+              5 /
+              this.secondsToMinutes(this.timePassed)
+            ).toFixed(2)
+          }}</el-descriptions-item
         >
       </el-descriptions>
     </el-card>

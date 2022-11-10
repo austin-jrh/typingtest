@@ -1,11 +1,13 @@
 <template>
-  <div :key="test.id" v-for="test in tests">
-    <CustomTest
-      @run-test="$emit('run-test', test.id)"
-      @save-edit-test="$emit('save-edit-test', test)"
-      @delete-test="$emit('delete-test', test.id)"
-      :test="test"
-    />
+  <div>
+    <div :key="test.id" v-for="test in tests">
+      <CustomTest
+        @run-test="$emit('run-test', test.id)"
+        @save-edit-test="$emit('save-edit-test', test)"
+        @delete-test="$emit('delete-test', test.id)"
+        :test="test"
+      />
+    </div>
   </div>
 </template>
 

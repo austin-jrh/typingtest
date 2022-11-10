@@ -1,19 +1,26 @@
 ## Must have
-- User profile (persistent user, saved locally)
-- WPM result (result and proper calculation, save highscore to user)
-- Custom test by User
-- Apply custom words to current test
-- Dockerfile
-- NGINX
 
 ## Should have
 - Proper CSS
 
 ## Could have
 - Able to change time limit of each test
-- Change Login and Password for User
+- Update Login and Password for User
 
 ## Won't have
 - Proper profile database
 - Use proper API (axios, knex, preparedStatements)
 - Proper feedback and notifications
+
+Features:
+- User Profile
+  - Register
+  - Login
+  - Edit Display Name
+  - Persistent user using localStorage
+- Typing Test
+  - Random words
+  - Custom user words
+  - Scuffed WPM calculation
+  - Saved highscore to logged in user
+- Using NGINX and Docker, deployed in EC2

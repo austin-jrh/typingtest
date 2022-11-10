@@ -19,12 +19,13 @@
         ref="typingTest"
         @update-score="updateScore"
       />
-      <AddCustomTest @add-test="addTest" />
+      <AddCustomTest @add-test="addTest" v-show="user.login !== ''" />
       <CustomTests
         @run-test="runTest"
         @save-edit-test="saveEditTest"
         @delete-test="deleteTest"
         :tests="tests"
+        v-show="user.login !== ''"
       />
     </el-main>
   </el-container>
@@ -81,7 +82,7 @@ export default {
         })
         .catch((error) => {
           ElMessage({
-            type: "danger",
+            type: "error",
             message: `Something went wrong. ${error}`,
           });
         });
@@ -98,17 +99,17 @@ export default {
     async saveEditTest(test) {
       Service.editTest(test)
         .then(() => {
-          Service.getTests().then((response) => {
+          this.getUserTests().then((response) => {
             this.tests = response;
             ElMessage({
-              type: "warning",
+              type: "success",
               message: "Edit successful.",
             });
           });
         })
         .catch((error) => {
           ElMessage({
-            type: "danger",
+            type: "error",
             message: `Something went wrong. ${error}`,
           });
         });
@@ -125,7 +126,7 @@ export default {
       )
         .then(() => {
           Service.deleteTest(this.currentLogin, id).then(() => {
-            Service.getTests().then((response) => {
+            this.getUserTests().then((response) => {
               this.tests = response;
               ElMessage({
                 type: "success",
@@ -272,8 +273,7 @@ export default {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+  color: #14191f;
 }
 .el-header,
 .el-footer {
@@ -292,5 +292,9 @@ export default {
 
 body > .el-container {
   margin-bottom: 40px;
+}
+
+body {
+  background-color: rgb(170, 170, 170);
 }
 </style>

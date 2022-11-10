@@ -13,8 +13,12 @@
           >
         </el-row>
       </div>
-      <div>Description: {{ test.description }}</div>
-      <div>Custom Words: {{ test.words }}</div>
+      <el-table :data="tableData" style="width: 100% overflow-wrap: break-word">
+        <el-table-column prop="key" label="" />
+        <el-table-column prop="value" label="" />
+      </el-table>
+      <!-- <div>Description: {{ test.description }}</div>
+      <div>Custom Words: {{ test.words }}</div> -->
     </el-card>
   </div>
   <div class="editTest" v-show="showEdit">
@@ -69,6 +73,16 @@ export default {
       tempName: "",
       tempDesc: "",
       tempWords: "",
+      tableData: [
+        {
+          key: "Description",
+          value: this.test.description,
+        },
+        {
+          key: "Custom Words",
+          value: this.test.words,
+        },
+      ],
     };
   },
   methods: {
@@ -83,6 +97,19 @@ export default {
       this.test.description = this.tempDesc;
       this.test.words = this.tempWords;
       this.showEdit = false;
+    },
+
+    updateTableData() {
+      tableData = [
+        {
+          key: "Description",
+          value: this.test.description,
+        },
+        {
+          key: "Custom Words",
+          value: this.test.words,
+        },
+      ];
     },
   },
   emits: ["run-test", "save-edit-test", "delete-test"],
@@ -106,5 +133,6 @@ export default {
 
 .box-card {
   width: 480px;
+  margin: 10px;
 }
 </style>
