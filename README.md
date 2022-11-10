@@ -11,6 +11,7 @@ Link to site: http://student-4.sutdacademytools.net (Hopefully its up)
 - [Technical Stack](#technical-stack)
   - [Front-end](#front-end)
   - [Back-end](#back-end)
+  - [Deployment](#deployment)
 - [Demo](#demo)
 - [Setup](#setup)
 - [Security Vulnerability](#security-vulnerability)
@@ -40,8 +41,12 @@ Using:
 - Node.js (runtime environment)
 - Express (web application framework)
 - Sqlite (database)
+
+### Deployment
+Using:
 - Docker (Container)
 - NGINX (Reverse proxy)
+- Amazon EC2 (Cloud)
 
 ## Demo
 - Login to existing user
@@ -86,7 +91,7 @@ Using:
 git clone https://github.com/austin-jrh/sutd-devtools2022.git
 ```
 
-2. Install Docker
+2. Install Docker.
 ```
 # Install Docker packages
 sudo apt-get update
@@ -136,6 +141,9 @@ docker ps
 ```
 
 ## Security Vulnerability
-### SQL Injection attack with crafted form inputs (login)
-### Modifying the database without authorization (change highscore)
-### Access to profiles
+
+These vulnerabilities are elaborated in [back-end README](https://github.com/austin-jrh/sutd-devtools2022-backend/blob/main/README.md#security-vulnerability).
+
+- SQL Injection attack with crafted form inputs (login) - [link](https://github.com/austin-jrh/sutd-devtools2022-backend/blob/main/README.md#sql-injection-attack-with-crafted-form-inputs-login)
+- Modifying the database without authorization (change highscore) - [link](https://github.com/austin-jrh/sutd-devtools2022-backend/blob/main/README.md#modifying-the-database-without-authorization-change-highscore)
+- Access to profiles - [link](https://github.com/austin-jrh/sutd-devtools2022-backend/blob/main/README.md#access-to-profiles)
