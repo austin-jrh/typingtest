@@ -53,8 +53,8 @@
         >
       </el-descriptions>
     </el-card>
-    <el-row>
-      <el-input v-model="input" />
+    <el-row class="userInputRow">
+      <el-input v-model="input" class="textbar" />
       <el-button type="primary" @click="onClickReset">Reset</el-button>
     </el-row>
   </el-card>
@@ -244,5 +244,15 @@ span {
 
 .pastWrong {
   color: red;
+}
+
+span,
+.textbar {
+  font-family: "Roboto Mono";
+}
+
+.testResult,
+.el-descriptions {
+  font-size: larger;
 }
 </style>

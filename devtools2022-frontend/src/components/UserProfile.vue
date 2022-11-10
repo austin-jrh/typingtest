@@ -258,6 +258,9 @@ export default {
 </script>
 
 <style scoped>
+html * {
+  font-family: "Inconsolata", Avenir, Helvetica, Arial, sans-serif;
+}
 header {
   display: flex;
 }
@@ -265,6 +268,7 @@ h3 {
   text-align: left;
 }
 .el-form {
+  font-family: "Inconsolata";
   width: 25%;
   min-width: 400px;
 }

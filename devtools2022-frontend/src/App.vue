@@ -36,6 +36,8 @@ import UserProfile from "./components/UserProfile.vue";
 import CustomTests from "./components/CustomTests.vue";
 import AddCustomTest from "./components/AddCustomTest.vue";
 import TypingTest from "./components/TypingTest.vue";
+import "element-plus/es/components/message/style/css";
+import "element-plus/es/components/message-box/style/css";
 import { ElMessage, ElMessageBox } from "element-plus";
 import Service from "./Service.js";
 import RandomWordsGen from "./RandomWordsGen.js";
@@ -268,23 +270,35 @@ export default {
 </script>
 
 <style>
+@import url("https://fonts.googleapis.com/css?family=Roboto+Mono|Inconsolata");
+
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+  font-family: "Inconsolata", Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #14191f;
+  color: #aec4df;
+  font-size: larger;
+}
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  color: inherit;
 }
 .el-header,
 .el-footer {
-  background-color: #b3c0d1;
+  background-color: #b3b3d1;
   color: #333;
   text-align: center;
   /* line-height: 60px; */
 }
 
 .el-main {
-  background-color: #e9eef3;
+  background-color: #dedceb;
   color: #333;
   text-align: center;
   /* line-height: 160px; */
@@ -295,6 +309,6 @@ body > .el-container {
 }
 
 body {
-  background-color: rgb(170, 170, 170);
+  background-color: #c9c5e6;
 }
 </style>
