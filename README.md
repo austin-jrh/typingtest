@@ -8,6 +8,12 @@ Link to site: http://student-4.sutdacademytools.net (Hopefully its up)
 
 ### Table of Contents 
 - [Features](#features)
+- [Technical Stack](#technical-stack)
+  - [Front-end](#front-end)
+  - [Back-end](#back-end)
+- [Demo](#demo)
+- [Setup](#setup)
+- [Security Vulnerability](#security-vulnerability)
 
 ## Features
 ![image](https://user-images.githubusercontent.com/87303121/201081692-7c6622a9-7ad2-471d-80d3-4e2a1f590a7b.png)
@@ -27,7 +33,9 @@ Using:
 - random-words (NPM library)
 - Google Fonts (Roboto Mono and Inconsolata)
 
-### Back-end - [link to repository](https://github.com/austin-jrh/sutd-devtools2022-backend)
+### Back-end
+[Link to repository](https://github.com/austin-jrh/sutd-devtools2022-backend)
+
 Using:
 - Node.js (runtime environment)
 - Express (web application framework)
