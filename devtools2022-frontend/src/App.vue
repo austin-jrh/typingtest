@@ -74,7 +74,7 @@ export default {
       data.owner = this.currentLogin;
       Service.createTest(data)
         .then(() => {
-          Service.getTests().then((response) => {
+          this.getUserTests().then((response) => {
             this.tests = response;
             ElMessage({
               type: "success",
