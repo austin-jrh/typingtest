@@ -56,7 +56,6 @@ export default {
       timeLimit: 25,
       timePassed: 0,
       timerInterval: null,
-      currentLogin: "guest",
       testWords: [],
       gameState: "waiting", //waiting, playing, finished
       user: {
@@ -71,7 +70,7 @@ export default {
     // Custom Test functionalities
     async addTest(test) {
       var data = test;
-      data.owner = this.currentLogin;
+      data.owner = this.user.login;
       Service.createTest(data)
         .then(() => {
           this.getUserTests().then((response) => {
@@ -127,7 +126,7 @@ export default {
         }
       )
         .then(() => {
-          Service.deleteTest(this.currentLogin, id).then(() => {
+          Service.deleteTest(this.user.login, id).then(() => {
             this.getUserTests().then((response) => {
               this.tests = response;
               ElMessage({
